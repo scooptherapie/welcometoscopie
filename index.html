@@ -2082,110 +2082,120 @@
   </main>
 
   <script>
+  const shopLoader = document.getElementById("shopLoader");
+  const statusText = document.getElementById("statusText");
+  const doorWrap = document.getElementById("doorWrap");
+  const mainContent = document.getElementById("mainContent");
+  const bgMusic = document.getElementById("bgMusic");
+  const bubbleLeft = document.getElementById("bubbleLeft");
+  const bubbleRight = document.getElementById("bubbleRight");
 
-    const shopLoader = document.getElementById("shopLoader");
-    const statusText = document.getElementById("statusText");
-    const doorWrap = document.getElementById("doorWrap");
-    const mainContent = document.getElementById("mainContent");
-    const bgMusic = document.getElementById("bgMusic");
-    const bubbleLeft = document.getElementById("bubbleLeft");
-    const bubbleRight = document.getElementById("bubbleRight");
+  const loadingTalks = [
+    ["psst... lights on?", "almost! scoops first 🍓"],
+    ["cones are ready!", "sprinkles too ✨"],
+    ["is the sign still closed?", "wait a lil bit 🍦"],
+    ["music check?", "soft and sweet 🎧"],
+    ["okay, one more scoop!", "then we open 💗"]
+  ];
 
-    const loadingTalks = [
-      ["psst... lights on?", "almost! scoops first 🍓"],
-      ["cones are ready!", "sprinkles too ✨"],
-      ["is the sign still closed?", "wait a lil bit 🍦"],
-      ["music check?", "soft and sweet 🎧"],
-      ["okay, one more scoop!", "then we open 💗"]
-    ];
+  const openTalk = ["we're open!", "tap the door, everyone 🍦"];
 
-    const openTalk = ["we're open!", "tap the door, everyone 🍦"];
+  let talkIndex = 0;
+  let talkTimer = null;
+  let isReady = false;
+  let hasEntered = false;
+  let hasStartedLoading = false;
 
-    let talkIndex = 0;
-    let talkTimer = null;
+  function updateBubbleTalk(leftText, rightText) {
+    if (!bubbleLeft || !bubbleRight) return;
 
-    function updateBubbleTalk(leftText, rightText) {
-      if (!bubbleLeft || !bubbleRight) return;
+    bubbleLeft.style.opacity = "0";
+    bubbleRight.style.opacity = "0";
 
-      bubbleLeft.style.opacity = "0";
-      bubbleRight.style.opacity = "0";
+    setTimeout(() => {
+      bubbleLeft.textContent = leftText;
+      bubbleRight.textContent = rightText;
+      bubbleLeft.style.opacity = "1";
+      bubbleRight.style.opacity = "1";
+    }, 180);
+  }
 
-      setTimeout(() => {
-        bubbleLeft.textContent = leftText;
-        bubbleRight.textContent = rightText;
-        bubbleLeft.style.opacity = "1";
-        bubbleRight.style.opacity = "1";
-      }, 180);
+  function startLoadingTalk() {
+    if (talkTimer) clearInterval(talkTimer);
+
+    updateBubbleTalk(loadingTalks[0][0], loadingTalks[0][1]);
+
+    talkTimer = setInterval(() => {
+      talkIndex = (talkIndex + 1) % loadingTalks.length;
+      updateBubbleTalk(loadingTalks[talkIndex][0], loadingTalks[talkIndex][1]);
+    }, 1200);
+  }
+
+  function stopLoadingTalk() {
+    if (talkTimer) clearInterval(talkTimer);
+    talkTimer = null;
+    updateBubbleTalk(openTalk[0], openTalk[1]);
+  }
+
+  function startLoadingShop() {
+    if (hasStartedLoading) return;
+    hasStartedLoading = true;
+
+    startLoadingTalk();
+
+    setTimeout(() => {
+      isReady = true;
+      shopLoader.classList.add("ready");
+      doorWrap.classList.add("can-click");
+      statusText.textContent = "OPEN";
+      stopLoadingTalk();
+    }, 3200);
+  }
+
+  function playBackgroundMusic() {
+    if (!bgMusic) return;
+
+    bgMusic.volume = 0.55;
+    bgMusic.loop = true;
+
+    const playPromise = bgMusic.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Browser bisa menolak audio kalau belum diizinkan.
+      });
     }
+  }
 
-    function startLoadingTalk() {
-      updateBubbleTalk(loadingTalks[0][0], loadingTalks[0][1]);
+  function enterShop() {
+    if (!isReady || hasEntered) return;
 
-      talkTimer = setInterval(() => {
-        talkIndex = (talkIndex + 1) % loadingTalks.length;
-        updateBubbleTalk(loadingTalks[talkIndex][0], loadingTalks[talkIndex][1]);
-      }, 1300);
+    hasEntered = true;
+    playBackgroundMusic();
+
+    shopLoader.classList.add("entering");
+    doorWrap.classList.remove("can-click");
+
+    setTimeout(() => {
+      shopLoader.classList.add("hide");
+      mainContent.classList.add("show");
+    }, 950);
+  }
+
+  doorWrap.addEventListener("click", enterShop);
+
+  doorWrap.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      enterShop();
     }
+  });
 
-    function stopLoadingTalk() {
-      if (talkTimer) clearInterval(talkTimer);
-      updateBubbleTalk(openTalk[0], openTalk[1]);
-    }
-
-    let isReady = false;
-    let hasEntered = false;
-
-    // Waktu loading sebelum toko berubah jadi OPEN
-    window.addEventListener("load", () => {
-      startLoadingTalk();
-
-      setTimeout(() => {
-        isReady = true;
-        shopLoader.classList.add("ready");
-        doorWrap.classList.add("can-click");
-        statusText.textContent = "OPEN";
-        stopLoadingTalk();
-      }, 3200);
-    });
-
-    function playBackgroundMusic() {
-      if (!bgMusic) return;
-
-      bgMusic.volume = 0.55;
-      bgMusic.loop = true;
-
-      const playPromise = bgMusic.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // Browser bisa menolak audio kalau link lagunya belum diisi atau belum diizinkan.
-        });
-      }
-    }
-
-    function enterShop() {
-      if (!isReady || hasEntered) return;
-
-      hasEntered = true;
-      playBackgroundMusic();
-      shopLoader.classList.add("entering");
-      doorWrap.classList.remove("can-click");
-
-      setTimeout(() => {
-        shopLoader.classList.add("hide");
-        mainContent.classList.add("show");
-      }, 950);
-    }
-
-    doorWrap.addEventListener("click", enterShop);
-
-    doorWrap.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        enterShop();
-      }
-    });
-
-  </script>
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startLoadingShop);
+  } else {
+    startLoadingShop();
+  }
+</script>
 
   <script>
 
