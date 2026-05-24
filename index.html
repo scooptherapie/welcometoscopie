@@ -1897,6 +1897,52 @@
       }
     }
   
+
+
+    /* =========================
+       MUSIC FALLBACK BUTTON
+    ========================== */
+
+    .music-fallback-btn {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 100000;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 3px solid rgba(255,255,255,.92);
+      background: linear-gradient(180deg, var(--mint), var(--mint-dark));
+      color: #ffffff;
+      font-family: "Chewy", cursive;
+      font-size: 18px;
+      letter-spacing: .4px;
+      box-shadow: 0 8px 0 #5b968a, 0 14px 24px rgba(91,150,138,.24);
+      transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+
+    .music-fallback-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 11px 0 #5b968a, 0 18px 28px rgba(91,150,138,.26);
+    }
+
+    .music-fallback-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 5px 0 #5b968a, 0 10px 18px rgba(91,150,138,.2);
+    }
+
+    .music-fallback-btn.hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 620px) {
+      .music-fallback-btn {
+        right: 14px;
+        bottom: 14px;
+        padding: 11px 15px;
+        font-size: 16px;
+      }
+    }
+
   </style>
 </head>
 
@@ -1908,6 +1954,10 @@
     loop 
     preload="auto">
   </audio>
+
+  <button id="musicFallbackBtn" class="music-fallback-btn hidden" type="button">
+    🎧 turn on the shop music
+  </button>
 
   <!-- LOADING SHOP -->
 <section class="shop-loader" id="shopLoader">
@@ -2087,6 +2137,7 @@
   const doorWrap = document.getElementById("doorWrap");
   const mainContent = document.getElementById("mainContent");
   const bgMusic = document.getElementById("bgMusic");
+  const musicFallbackBtn = document.getElementById("musicFallbackBtn");
   const bubbleLeft = document.getElementById("bubbleLeft");
   const bubbleRight = document.getElementById("bubbleRight");
 
@@ -2159,10 +2210,19 @@
     bgMusic.loop = true;
 
     const playPromise = bgMusic.play();
+
     if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // Browser bisa menolak audio kalau belum diizinkan.
-      });
+      playPromise
+        .then(() => {
+          if (musicFallbackBtn) {
+            musicFallbackBtn.classList.add("hidden");
+          }
+        })
+        .catch(() => {
+          if (musicFallbackBtn) {
+            musicFallbackBtn.classList.remove("hidden");
+          }
+        });
     }
   }
 
@@ -2189,6 +2249,12 @@
       enterShop();
     }
   });
+
+  if (musicFallbackBtn) {
+    musicFallbackBtn.addEventListener("click", () => {
+      playBackgroundMusic();
+    });
+  }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", startLoadingShop);
