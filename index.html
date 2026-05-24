@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light">
   <meta name="theme-color" content="#ffd9e8">
 
   <title>Scooptherapie Verification</title>
@@ -1943,6 +1944,311 @@
       }
     }
 
+
+    /* =========================
+       FIX LIGHT THEME ONLY
+       Keeps colors stable in Telegram/X/Twitter in-app browsers
+    ========================== */
+
+    :root,
+    html,
+    body {
+      color-scheme: light only !important;
+      background-color: #ffd9e8 !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+      forced-color-adjust: none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    input,
+    textarea,
+    select,
+    button,
+    a {
+      color-scheme: light only !important;
+    }
+
+    input {
+      -webkit-text-fill-color: var(--brown) !important;
+      caret-color: var(--rose) !important;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html,
+      body,
+      .shop-loader,
+      .landing-content,
+      .main-content {
+        background:
+          radial-gradient(circle at 12% 18%, rgba(255,255,255,.95) 0 8%, transparent 20%),
+          radial-gradient(circle at 88% 24%, rgba(255,255,255,.9) 0 7%, transparent 18%),
+          radial-gradient(circle at 16% 78%, rgba(255,255,255,.9) 0 9%, transparent 22%),
+          radial-gradient(circle at 82% 72%, rgba(255,255,255,.75) 0 8%, transparent 20%),
+          linear-gradient(135deg, #ffffff 0%, #ffd9e8 23%, #f8b7cf 50%, #ffdceb 75%, #ffffff 100%) !important;
+        color: var(--brown) !important;
+      }
+
+      .announcement-card,
+      .landing-card,
+      .result-card,
+      .search-box {
+        color: var(--brown) !important;
+      }
+    }
+
+    /* =========================
+       LANDING START PAGE
+    ========================== */
+
+    .landing-content {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .7s ease, visibility .7s ease;
+    }
+
+    .landing-content.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .landing-card {
+      width: min(760px, 94vw);
+      padding: clamp(32px, 6vw, 58px);
+      border-radius: 48px;
+      text-align: center;
+      background: rgba(255,255,255,.55);
+      border: 4px solid rgba(255,255,255,.82);
+      box-shadow: 0 26px 70px var(--shadow);
+      backdrop-filter: blur(14px);
+      position: relative;
+      overflow: hidden;
+      animation: cardPop .45s ease both;
+    }
+
+    .landing-card::before {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      left: -70px;
+      top: -70px;
+      border-radius: 50%;
+      background: rgba(255, 232, 154, .45);
+    }
+
+    .landing-card::after {
+      content: "";
+      position: absolute;
+      width: 210px;
+      height: 210px;
+      right: -80px;
+      bottom: -80px;
+      border-radius: 50%;
+      background: rgba(139, 192, 178, .35);
+    }
+
+    .landing-cups {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .landing-card h1 {
+      font-family: "Boogaloo", cursive;
+      font-size: clamp(56px, 11vw, 104px);
+      line-height: .84;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow:
+        3px 3px 0 var(--blue-dark),
+        -3px 3px 0 var(--blue-dark),
+        3px -3px 0 var(--blue-dark),
+        -3px -3px 0 var(--blue-dark),
+        0 8px 0 rgba(255,255,255,.85);
+      position: relative;
+      z-index: 1;
+    }
+
+    .landing-card p {
+      width: min(560px, 100%);
+      margin: 18px auto 26px;
+      font-family: "Kalam", cursive;
+      font-size: clamp(20px, 4vw, 28px);
+      line-height: 1.25;
+      color: var(--coral);
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .start-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 190px;
+      padding: 15px 32px;
+      border-radius: 999px;
+      color: #ffffff;
+      font-family: "Chewy", cursive;
+      font-size: clamp(23px, 5vw, 30px);
+      letter-spacing: 1px;
+      background: linear-gradient(180deg, var(--mint), var(--mint-dark));
+      box-shadow: 0 10px 0 #5b968a, 0 18px 25px rgba(91,150,138,.25);
+      transition: transform .2s ease, box-shadow .2s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 0 #5b968a, 0 24px 30px rgba(91,150,138,.25);
+    }
+
+    .start-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 6px 0 #5b968a, 0 12px 18px rgba(91,150,138,.2);
+    }
+
+    .landing-note {
+      margin-top: 16px !important;
+      font-size: clamp(15px, 3vw, 18px) !important;
+      color: rgba(159,107,77,.78) !important;
+      font-family: "Fredoka", sans-serif !important;
+      font-weight: 700 !important;
+    }
+
+    @media (max-width: 620px) {
+      .landing-card {
+        border-radius: 36px;
+        padding: 32px 20px 38px;
+      }
+
+      .landing-card h1 {
+        font-size: 54px;
+        line-height: .9;
+      }
+
+      .landing-card p {
+        font-size: 20px;
+      }
+
+      .start-btn {
+        width: 100%;
+      }
+    }
+
+
+
+    /* =========================
+       LANDING POSITION FIX
+       Keeps the START page centered after loading and prevents it from dropping down
+    ========================== */
+
+    .landing-content {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 9000 !important;
+      width: 100% !important;
+      min-height: 100dvh !important;
+      height: 100dvh !important;
+      overflow-y: auto !important;
+      overscroll-behavior: contain;
+      display: grid !important;
+      place-items: center !important;
+      padding: 18px 14px !important;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,.95) 0 8%, transparent 20%),
+        radial-gradient(circle at 88% 24%, rgba(255,255,255,.9) 0 7%, transparent 18%),
+        radial-gradient(circle at 16% 78%, rgba(255,255,255,.9) 0 9%, transparent 22%),
+        radial-gradient(circle at 82% 72%, rgba(255,255,255,.75) 0 8%, transparent 20%),
+        linear-gradient(135deg, #ffffff 0%, #ffd9e8 23%, #f8b7cf 50%, #ffdceb 75%, #ffffff 100%) !important;
+    }
+
+    .landing-content:not(.show) {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    .landing-content.show {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+    }
+
+    .landing-card {
+      max-height: calc(100dvh - 36px);
+      overflow-y: auto;
+      margin: 0 auto !important;
+      scrollbar-width: none;
+    }
+
+    .landing-card::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media (max-height: 720px) {
+      .landing-content {
+        place-items: start center !important;
+        padding-top: 14px !important;
+        padding-bottom: 14px !important;
+      }
+
+      .landing-card {
+        padding: 24px 22px 28px !important;
+        border-radius: 34px !important;
+      }
+
+      .landing-cups {
+        margin-bottom: 8px !important;
+        transform: scale(.82);
+      }
+
+      .landing-card .mini-badge {
+        margin-bottom: 12px !important;
+        transform: scale(.92);
+      }
+
+      .landing-card h1 {
+        font-size: clamp(48px, 8.4vw, 76px) !important;
+        line-height: .86 !important;
+      }
+
+      .landing-card p {
+        margin: 14px auto 18px !important;
+        font-size: clamp(18px, 3.1vw, 22px) !important;
+      }
+
+      .landing-note {
+        margin-top: 12px !important;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .landing-content {
+        padding: 16px 12px !important;
+      }
+
+      .landing-card {
+        max-height: calc(100dvh - 32px);
+      }
+    }
+
   </style>
 </head>
 
@@ -2050,6 +2356,48 @@
     </div>
   </section>
 
+
+  <!-- LANDING START PAGE -->
+  <main class="landing-content" id="landingContent">
+    <section class="landing-card">
+      <div class="landing-cups">
+        <div class="ice-cup pink">
+          <div class="ice-scoop left"></div>
+          <div class="ice-scoop right"></div>
+          <div class="ice-bowl"></div>
+        </div>
+
+        <div class="ice-cup yellow">
+          <div class="ice-scoop left"></div>
+          <div class="ice-scoop right"></div>
+          <div class="ice-bowl"></div>
+        </div>
+
+        <div class="ice-cup mint">
+          <div class="ice-scoop left"></div>
+          <div class="ice-scoop right"></div>
+          <div class="ice-bowl"></div>
+        </div>
+      </div>
+
+      <div class="mini-badge">🍦 SCOOPTHERAPIE VERIFICATION</div>
+
+      <h1>WELCOME TO<br>SCOOPTHERAPIE</h1>
+
+      <p>
+        The shop is open. Tap start to turn on the shop music and check your verification result.
+      </p>
+
+      <button class="start-btn" id="startExperienceBtn" type="button">
+        START 🍨
+      </button>
+
+      <p class="landing-note">
+        For the best experience, open this page in Chrome or Safari.
+      </p>
+    </section>
+  </main>
+
   <!-- RESULT CHECKER PAGE -->
 <main class="page main-content" id="mainContent">
     <span class="sprinkle a"></span>
@@ -2135,9 +2483,11 @@
   const shopLoader = document.getElementById("shopLoader");
   const statusText = document.getElementById("statusText");
   const doorWrap = document.getElementById("doorWrap");
+  const landingContent = document.getElementById("landingContent");
   const mainContent = document.getElementById("mainContent");
   const bgMusic = document.getElementById("bgMusic");
   const musicFallbackBtn = document.getElementById("musicFallbackBtn");
+  const startExperienceBtn = document.getElementById("startExperienceBtn");
   const bubbleLeft = document.getElementById("bubbleLeft");
   const bubbleRight = document.getElementById("bubbleRight");
 
@@ -2156,6 +2506,7 @@
   let isReady = false;
   let hasEntered = false;
   let hasStartedLoading = false;
+  let hasStartedExperience = false;
 
   function updateBubbleTalk(leftText, rightText) {
     if (!bubbleLeft || !bubbleRight) return;
@@ -2204,7 +2555,7 @@
   }
 
   function playBackgroundMusic() {
-    if (!bgMusic) return;
+    if (!bgMusic) return Promise.resolve(false);
 
     bgMusic.volume = 0.55;
     bgMusic.loop = true;
@@ -2212,33 +2563,58 @@
     const playPromise = bgMusic.play();
 
     if (playPromise !== undefined) {
-      playPromise
+      return playPromise
         .then(() => {
           if (musicFallbackBtn) {
             musicFallbackBtn.classList.add("hidden");
           }
+          return true;
         })
         .catch(() => {
           if (musicFallbackBtn) {
             musicFallbackBtn.classList.remove("hidden");
           }
+          return false;
         });
     }
+
+    return Promise.resolve(true);
   }
 
   function enterShop() {
     if (!isReady || hasEntered) return;
 
     hasEntered = true;
-    playBackgroundMusic();
-
     shopLoader.classList.add("entering");
     doorWrap.classList.remove("can-click");
 
     setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
       shopLoader.classList.add("hide");
-      mainContent.classList.add("show");
+      landingContent.classList.add("show");
+
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        if (startExperienceBtn) {
+          startExperienceBtn.focus();
+        }
+      }, 250);
     }, 950);
+  }
+
+  function startExperience() {
+    if (hasStartedExperience) return;
+
+    hasStartedExperience = true;
+    playBackgroundMusic();
+
+    landingContent.classList.remove("show");
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+
+    setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      mainContent.classList.add("show");
+    }, 450);
   }
 
   doorWrap.addEventListener("click", enterShop);
@@ -2249,6 +2625,10 @@
       enterShop();
     }
   });
+
+  if (startExperienceBtn) {
+    startExperienceBtn.addEventListener("click", startExperience);
+  }
 
   if (musicFallbackBtn) {
     musicFallbackBtn.addEventListener("click", () => {
