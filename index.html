@@ -716,6 +716,7 @@
       transform-origin: bottom center;
       animation: bubbleTalk 2.4s ease-in-out infinite;
       pointer-events: none;
+      transition: opacity .18s ease, transform .25s ease;
     }
 
     .chat-bubble::after {
@@ -2087,17 +2088,63 @@
     const doorWrap = document.getElementById("doorWrap");
     const mainContent = document.getElementById("mainContent");
     const bgMusic = document.getElementById("bgMusic");
+    const bubbleLeft = document.getElementById("bubbleLeft");
+    const bubbleRight = document.getElementById("bubbleRight");
+
+    const loadingTalks = [
+      ["psst... lights on?", "almost! scoops first 🍓"],
+      ["cones are ready!", "sprinkles too ✨"],
+      ["is the sign still closed?", "wait a lil bit 🍦"],
+      ["music check?", "soft and sweet 🎧"],
+      ["okay, one more scoop!", "then we open 💗"]
+    ];
+
+    const openTalk = ["we're open!", "tap the door, everyone 🍦"];
+
+    let talkIndex = 0;
+    let talkTimer = null;
+
+    function updateBubbleTalk(leftText, rightText) {
+      if (!bubbleLeft || !bubbleRight) return;
+
+      bubbleLeft.style.opacity = "0";
+      bubbleRight.style.opacity = "0";
+
+      setTimeout(() => {
+        bubbleLeft.textContent = leftText;
+        bubbleRight.textContent = rightText;
+        bubbleLeft.style.opacity = "1";
+        bubbleRight.style.opacity = "1";
+      }, 180);
+    }
+
+    function startLoadingTalk() {
+      updateBubbleTalk(loadingTalks[0][0], loadingTalks[0][1]);
+
+      talkTimer = setInterval(() => {
+        talkIndex = (talkIndex + 1) % loadingTalks.length;
+        updateBubbleTalk(loadingTalks[talkIndex][0], loadingTalks[talkIndex][1]);
+      }, 1300);
+    }
+
+    function stopLoadingTalk() {
+      if (talkTimer) clearInterval(talkTimer);
+      updateBubbleTalk(openTalk[0], openTalk[1]);
+    }
 
     let isReady = false;
     let hasEntered = false;
 
     // Waktu loading sebelum toko berubah jadi OPEN
     window.addEventListener("load", () => {
+      startLoadingTalk();
+
       setTimeout(() => {
         isReady = true;
         shopLoader.classList.add("ready");
         doorWrap.classList.add("can-click");
         statusText.textContent = "OPEN";
+        stopLoadingTalk();
       }, 3200);
     });
 
