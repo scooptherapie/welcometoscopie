@@ -1897,52 +1897,6 @@
       }
     }
   
-
-
-    /* =========================
-       MUSIC FALLBACK BUTTON
-    ========================== */
-
-    .music-fallback-btn {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 100000;
-      padding: 12px 18px;
-      border-radius: 999px;
-      border: 3px solid rgba(255,255,255,.92);
-      background: linear-gradient(180deg, var(--mint), var(--mint-dark));
-      color: #ffffff;
-      font-family: "Chewy", cursive;
-      font-size: 18px;
-      letter-spacing: .4px;
-      box-shadow: 0 8px 0 #5b968a, 0 14px 24px rgba(91,150,138,.24);
-      transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
-    }
-
-    .music-fallback-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 11px 0 #5b968a, 0 18px 28px rgba(91,150,138,.26);
-    }
-
-    .music-fallback-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 5px 0 #5b968a, 0 10px 18px rgba(91,150,138,.2);
-    }
-
-    .music-fallback-btn.hidden {
-      display: none !important;
-    }
-
-    @media (max-width: 620px) {
-      .music-fallback-btn {
-        right: 14px;
-        bottom: 14px;
-        padding: 11px 15px;
-        font-size: 16px;
-      }
-    }
-
   </style>
 </head>
 
@@ -1954,10 +1908,6 @@
     loop 
     preload="auto">
   </audio>
-
-  <button id="musicFallbackBtn" class="music-fallback-btn hidden" type="button">
-    🎧 turn on the shop music
-  </button>
 
   <!-- LOADING SHOP -->
 <section class="shop-loader" id="shopLoader">
@@ -2132,136 +2082,110 @@
   </main>
 
   <script>
-  const shopLoader = document.getElementById("shopLoader");
-  const statusText = document.getElementById("statusText");
-  const doorWrap = document.getElementById("doorWrap");
-  const mainContent = document.getElementById("mainContent");
-  const bgMusic = document.getElementById("bgMusic");
-  const musicFallbackBtn = document.getElementById("musicFallbackBtn");
-  const bubbleLeft = document.getElementById("bubbleLeft");
-  const bubbleRight = document.getElementById("bubbleRight");
 
-  const loadingTalks = [
-    ["psst... lights on?", "almost! scoops first 🍓"],
-    ["cones are ready!", "sprinkles too ✨"],
-    ["is the sign still closed?", "wait a lil bit 🍦"],
-    ["music check?", "soft and sweet 🎧"],
-    ["okay, one more scoop!", "then we open 💗"]
-  ];
+    const shopLoader = document.getElementById("shopLoader");
+    const statusText = document.getElementById("statusText");
+    const doorWrap = document.getElementById("doorWrap");
+    const mainContent = document.getElementById("mainContent");
+    const bgMusic = document.getElementById("bgMusic");
+    const bubbleLeft = document.getElementById("bubbleLeft");
+    const bubbleRight = document.getElementById("bubbleRight");
 
-  const openTalk = ["we're open!", "tap the door, everyone 🍦"];
+    const loadingTalks = [
+      ["psst... lights on?", "almost! scoops first 🍓"],
+      ["cones are ready!", "sprinkles too ✨"],
+      ["is the sign still closed?", "wait a lil bit 🍦"],
+      ["music check?", "soft and sweet 🎧"],
+      ["okay, one more scoop!", "then we open 💗"]
+    ];
 
-  let talkIndex = 0;
-  let talkTimer = null;
-  let isReady = false;
-  let hasEntered = false;
-  let hasStartedLoading = false;
+    const openTalk = ["we're open!", "tap the door, Scoomie 🍦"];
 
-  function updateBubbleTalk(leftText, rightText) {
-    if (!bubbleLeft || !bubbleRight) return;
+    let talkIndex = 0;
+    let talkTimer = null;
 
-    bubbleLeft.style.opacity = "0";
-    bubbleRight.style.opacity = "0";
+    function updateBubbleTalk(leftText, rightText) {
+      if (!bubbleLeft || !bubbleRight) return;
 
-    setTimeout(() => {
-      bubbleLeft.textContent = leftText;
-      bubbleRight.textContent = rightText;
-      bubbleLeft.style.opacity = "1";
-      bubbleRight.style.opacity = "1";
-    }, 180);
-  }
+      bubbleLeft.style.opacity = "0";
+      bubbleRight.style.opacity = "0";
 
-  function startLoadingTalk() {
-    if (talkTimer) clearInterval(talkTimer);
-
-    updateBubbleTalk(loadingTalks[0][0], loadingTalks[0][1]);
-
-    talkTimer = setInterval(() => {
-      talkIndex = (talkIndex + 1) % loadingTalks.length;
-      updateBubbleTalk(loadingTalks[talkIndex][0], loadingTalks[talkIndex][1]);
-    }, 1200);
-  }
-
-  function stopLoadingTalk() {
-    if (talkTimer) clearInterval(talkTimer);
-    talkTimer = null;
-    updateBubbleTalk(openTalk[0], openTalk[1]);
-  }
-
-  function startLoadingShop() {
-    if (hasStartedLoading) return;
-    hasStartedLoading = true;
-
-    startLoadingTalk();
-
-    setTimeout(() => {
-      isReady = true;
-      shopLoader.classList.add("ready");
-      doorWrap.classList.add("can-click");
-      statusText.textContent = "OPEN";
-      stopLoadingTalk();
-    }, 3200);
-  }
-
-  function playBackgroundMusic() {
-    if (!bgMusic) return;
-
-    bgMusic.volume = 0.55;
-    bgMusic.loop = true;
-
-    const playPromise = bgMusic.play();
-
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          if (musicFallbackBtn) {
-            musicFallbackBtn.classList.add("hidden");
-          }
-        })
-        .catch(() => {
-          if (musicFallbackBtn) {
-            musicFallbackBtn.classList.remove("hidden");
-          }
-        });
+      setTimeout(() => {
+        bubbleLeft.textContent = leftText;
+        bubbleRight.textContent = rightText;
+        bubbleLeft.style.opacity = "1";
+        bubbleRight.style.opacity = "1";
+      }, 180);
     }
-  }
 
-  function enterShop() {
-    if (!isReady || hasEntered) return;
+    function startLoadingTalk() {
+      updateBubbleTalk(loadingTalks[0][0], loadingTalks[0][1]);
 
-    hasEntered = true;
-    playBackgroundMusic();
-
-    shopLoader.classList.add("entering");
-    doorWrap.classList.remove("can-click");
-
-    setTimeout(() => {
-      shopLoader.classList.add("hide");
-      mainContent.classList.add("show");
-    }, 950);
-  }
-
-  doorWrap.addEventListener("click", enterShop);
-
-  doorWrap.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      enterShop();
+      talkTimer = setInterval(() => {
+        talkIndex = (talkIndex + 1) % loadingTalks.length;
+        updateBubbleTalk(loadingTalks[talkIndex][0], loadingTalks[talkIndex][1]);
+      }, 1300);
     }
-  });
 
-  if (musicFallbackBtn) {
-    musicFallbackBtn.addEventListener("click", () => {
-      playBackgroundMusic();
+    function stopLoadingTalk() {
+      if (talkTimer) clearInterval(talkTimer);
+      updateBubbleTalk(openTalk[0], openTalk[1]);
+    }
+
+    let isReady = false;
+    let hasEntered = false;
+
+    // Waktu loading sebelum toko berubah jadi OPEN
+    window.addEventListener("load", () => {
+      startLoadingTalk();
+
+      setTimeout(() => {
+        isReady = true;
+        shopLoader.classList.add("ready");
+        doorWrap.classList.add("can-click");
+        statusText.textContent = "OPEN";
+        stopLoadingTalk();
+      }, 3200);
     });
-  }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startLoadingShop);
-  } else {
-    startLoadingShop();
-  }
-</script>
+    function playBackgroundMusic() {
+      if (!bgMusic) return;
+
+      bgMusic.volume = 0.55;
+      bgMusic.loop = true;
+
+      const playPromise = bgMusic.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Browser bisa menolak audio kalau link lagunya belum diisi atau belum diizinkan.
+        });
+      }
+    }
+
+    function enterShop() {
+      if (!isReady || hasEntered) return;
+
+      hasEntered = true;
+      playBackgroundMusic();
+      shopLoader.classList.add("entering");
+      doorWrap.classList.remove("can-click");
+
+      setTimeout(() => {
+        shopLoader.classList.add("hide");
+        mainContent.classList.add("show");
+      }, 950);
+    }
+
+    doorWrap.addEventListener("click", enterShop);
+
+    doorWrap.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        enterShop();
+      }
+    });
+
+  </script>
 
   <script>
 
